@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SELLINTEL AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#07101f;color:#eef3ff}
+.wrap{max-width:1150px;margin:auto;padding:16px}.card{background:#101a2f;border:1px solid #293858;border-radius:18px;padding:18px;margin:12px 0}
+h1,h2,h3{margin-top:0}.muted{color:#aab7d2}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+input,select,textarea,button{width:100%;padding:12px;border-radius:10px;border:1px solid #354361;background:#0a1326;color:#fff;font:inherit}
+button{background:#315efb;border:0;font-weight:700;cursor:pointer}.secondary{background:#263451}.danger{background:#8e2d3c}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}.hidden{display:none}.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
+.tabs button{white-space:nowrap;width:auto}.tab{display:none}.tab.active{display:block}.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#20345f;color:#c9d8ff;font-size:12px}
+.big{font-size:44px;font-weight:800}.result{border:1px solid #2c3a59;border-radius:14px;padding:14px;margin:10px 0;background:#0c1629}
+.bar{height:9px;background:#26324a;border-radius:99px;overflow:hidden}.fill{height:100%;background:#4f7cff}
+.ok{background:#163a28;color:#b9f0cb;padding:10px;border-radius:10px}.warn{background:#3b2d15;color:#ffe0a2;padding:10px;border-radius:10px}
+table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #293754;text-align:left}
+small{color:#9eabc7}
+</style></head>
+<body><div class="wrap">
+<div class="card">
+<h1>SELLINTEL AI <span class="pill">FINAL</span></h1>
+<div class="muted">Sistema de pesquisa → análise → oferta → conteúdo → checkout → métricas.</div>
+</div>
+
+<section id="auth">
+<div class="card"><h2>Aceder ao SELLINTEL AI</h2>
+<div class="grid"><div><label>Email</label><input id="email" type="email"></div><div><label>Palavra-passe</label><input id="password" type="password"></div></div>
+<div class="row" style="margin-top:10px"><button onclick="register()">Criar conta</button><button class="secondary" onclick="login()">Entrar</button></div>
+<p id="authMsg" class="warn">Protótipo funcional. Para produção, configure domínio, HTTPS, base de dados gerida, verificação de email e recuperação de palavra-passe.</p>
+</div></section>
+
+<section id="app" class="hidden">
+<div class="card"><div class="row"><div><b id="who"></b><div class="muted">Conta ativa</div></div><button class="secondary" onclick="logout()">Sair</button></div></div>
+<div class="tabs">
+<button onclick="tab('radar')">Radar</button><button onclick="tab('offer')">Oferta</button><button onclick="tab('content')">Conteúdo</button><button onclick="tab('checkout')">Checkout</button><button onclick="tab('metrics')">Métricas</button><button onclick="tab('security')">Segurança</button>
+</div>
+
+<div id="radar" class="tab active">
+<div class="card"><h2>Product Radar</h2>
+<div class="grid">
+<div><label>Produto</label><input id="pname" placeholder="Ex.: Pack de templates"></div>
+<div><label>Categoria</label><select id="cat"><option>Digital</option><option>Educação</option><option>Design</option><option>Serviço</option><option>Casa</option><option>Beleza</option><option>Outro</option></select></div>
+<div><label>Mercado</label><select id="market"><option>Angola</option><option>África</option><option>Internacional</option></select></div>
+<div><label>Preço (AOA)</label><input id="price" type="number" value="5000"></div>
+<div><label>Custo (AOA)</label><input id="cost" type="number" value="1000"></div>
+<div><label>Procura (0–100)</label><input id="demand" type="number" value="70"></div>
+<div><label>Tendência (0–100)</label><input id="growth" type="number" value="65"></div>
+<div><label>Concorrência favorável (0–100)</label><input id="competition" type="number" value="60"></div>
+<div><label>Demonstração (0–100)</label><input id="demo" type="number" value="80"></div>
+<div><label>Conteúdo (0–100)</label><input id="content" type="number" value="75"></div>
+<div><label>Confiança/risco (0–100)</label><input id="trust" type="number" value="70"></div>
+</div><button style="margin-top:12px" onclick="analyze()">Analisar e guardar</button></div>
+<div class="card"><h2>Produtos analisados</h2><div id="products"></div></div>
+</div>
+
+<div id="offer" class="tab"><div class="card"><h2>Offer Builder</h2>
+<div class="grid"><div><label>Produto</label><input id="offerProduct"></div><div><label>Público</label><input id="audience" placeholder="Ex.: pequenos negócios"></div><div><label>Preço</label><input id="offerPrice" placeholder="4.99 USD / 5000 AOA"></div><div><label>Problema principal</label><input id="problem"></div></div>
+<button style="margin-top:12px" onclick="makeOffer()">Gerar oferta</button><div id="offerOut"></div></div></div>
+
+<div id="content" class="tab"><div class="card"><h2>Faceless Content Engine</h2>
+<div class="grid"><div><label>Produto/oferta</label><input id="contentProduct"></div><div><label>Plataforma</label><select id="platform"><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option><option>Facebook</option></select></div><div><label>Benefício</label><input id="benefit"></div></div>
+<button style="margin-top:12px" onclick="makeContent()">Gerar roteiro</button><div id="contentOut"></div></div></div>
+
+<div id="checkout" class="tab"><div class="card"><h2>Checkout</h2>
+<div class="grid"><div><label>Produto</label><input id="coProduct"></div><div><label>Preço (AOA)</label><input id="coPrice" type="number" value="5000"></div><div><label>Cliente</label><input id="customer"></div><div><label>Telefone</label><input id="phone"></div><div><label>Email</label><input id="customerEmail" type="email"></div></div>
+<button style="margin-top:12px" onclick="createOrder()">Criar pedido pendente</button><div id="checkoutOut"></div>
+<div class="warn" style="margin-top:12px">Este checkout não cobra dinheiro. Para pagamentos reais, será ligado um provedor oficial aprovado e o estado será confirmado por webhook. Nunca peça PIN, OTP/2FA, palavra-passe bancária ou CVV.</div>
+</div></div>
+
+<div id="metrics" class="tab"><div class="card"><h2>Sales Dashboard</h2>
+<div class="grid"><div><label>Visualizações</label><input id="views" type="number" value="1000"></div><div><label>Cliques</label><input id="clicks" type="number" value="80"></div><div><label>Leads/mensagens</label><input id="leads" type="number" value="20"></div><div><label>Vendas</label><input id="sales" type="number" value="3"></div><div><label>Receita (AOA)</label><input id="revenue" type="number" value="15000"></div><div><label>Publicidade (AOA)</label><input id="adspend" type="number" value="3000"></div><div><label>Custos produto (AOA)</label><input id="prodCost" type="number" value="3000"></div><div><label>Outros custos (AOA)</label><input id="otherCost" type="number" value="500"></div></div>
+<button style="margin-top:12px" onclick="metrics()">Calcular</button><div id="metricsOut"></div></div></div>
+
+<div id="security" class="tab"><div class="card"><h2>Segurança</h2><ul>
+<li>Não guardar PIN bancário, OTP/2FA, CVV ou palavras-passe bancárias.</li>
+<li>Usar HTTPS em produção.</li><li>Guardar segredos apenas no servidor.</li><li>Validar webhooks de pagamento.</li><li>Usar base de dados gerida e backups.</li><li>Adicionar verificação de email e recuperação de palavra-passe.</li>
+</ul><div class="warn">A versão entregue é um projeto funcional de base, não uma certificação de segurança nem uma garantia de vendas.</div></div></div>
+</section></div>
+
+<script>
+let token=localStorage.getItem("si_token");
+const $=id=>document.getElementById(id);
+async function api(path,opts={}){opts.headers={...(opts.headers||{}),"Content-Type":"application/json"};if(token)opts.headers.Authorization="Bearer "+token;let r=await fetch("/api"+path,opts),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Erro");return d}
+function tab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));$(id).classList.add("active")}
+async function register(){try{let d=await api("/auth/register",{method:"POST",body:JSON.stringify({email:$("email").value,password:$("password").value})});token=d.token;localStorage.setItem("si_token",token);boot()}catch(e){$("authMsg").textContent=e.message}}
+async function login(){try{let d=await api("/auth/login",{method:"POST",body:JSON.stringify({email:$("email").value,password:$("password").value})});token=d.token;localStorage.setItem("si_token",token);boot()}catch(e){$("authMsg").textContent=e.message}}
+async function boot(){try{let d=await api("/auth/me");$("auth").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent=d.user.email;loadProducts()}catch(e){}}
+async function logout(){try{await api("/auth/logout",{method:"POST"})}catch(e){}localStorage.removeItem("si_token");location.reload()}
+function val(id){return Math.max(0,Math.min(100,Number($(id).value)||0))}
+async function analyze(){
+ let x={name:$("pname").value.trim(),category:$("cat").value,market:$("market").value,price:+$("price").value||0,cost:+$("cost").value||0,demand:val("demand"),growth:val("growth"),competition:val("competition"),demo:val("demo"),content:val("content"),trust:val("trust")};
+ if(!x.name)return alert("Escreve o nome do produto.");
+ let margin=x.price?Math.max(0,Math.min(100,(x.price-x.cost)/x.price*100)):0;
+ x.score=Math.round(.20*x.demand+.15*x.growth+.15*x.competition+.15*margin+.10*x.demo+.10*(x.market==="Internacional"?70:85)+.10*x.content+.05*x.trust);
+ await api("/products",{method:"POST",body:JSON.stringify(x)});loadProducts()
+}
+async function loadProducts(){let d=await api("/products");$("products").innerHTML=d.products.length?d.products.sort((a,b)=>b.score-a.score).map(p=>`<div class="result"><div class="row"><div><b>${esc(p.name)}</b><div class="muted">${esc(p.category)} · ${esc(p.market)}</div></div><div class="big">${p.score}</div></div><div class="bar"><div class="fill" style="width:${p.score}%"></div></div><p>${p.score>=80?"Prioridade de teste.":p.score>=60?"Validar mais sinais.":"Baixa prioridade por agora."}</p><button class="danger" onclick="delProduct('${p.id}')">Remover</button></div>`).join(""):'<div class="warn">Nenhum produto analisado.</div>'}
+async function delProduct(id){await api("/products/"+id,{method:"DELETE"});loadProducts()}
+function makeOffer(){let p=$("offerProduct").value,a=$("audience").value,pr=$("offerPrice").value,prob=$("problem").value;$("offerOut").innerHTML=`<div class="result"><h3>${esc(p)} para ${esc(a)}</h3><p><b>Headline:</b> Resolva ${esc(prob)} com uma solução simples e prática.</p><p><b>Oferta:</b> ${esc(p)} por ${esc(pr)}.</p><p><b>Benefícios:</b> clareza, economia de tempo e execução mais simples.</p><p><b>Objeção:</b> “Será que funciona para mim?” → explique exatamente para quem é, o que entrega e quais são os limites.</p><p><b>CTA:</b> Ver a oferta e decidir.</p></div>`}
+function makeContent(){let p=$("contentProduct").value,pl=$("platform").value,b=$("benefit").value;$("contentOut").innerHTML=`<div class="result"><b>Hook:</b> “Se estás a tentar ${esc(b)}, vê isto antes de gastar dinheiro.”<p><b>Roteiro:</b> Mostra o problema → demonstra a solução → mostra o resultado verificável → apresenta a oferta → CTA.</p><p><b>Formato:</b> ${esc(pl)}, 30–40s, gravação de ecrã/produto + texto na tela + voz opcional.</p><p><b>CTA:</b> “Vê os detalhes no link.”</p></div>`}
+function createOrder(){let id="SI-"+Date.now();$("checkoutOut").innerHTML=`<div class="result"><b>Pedido criado:</b> ${id}<p>Produto: ${esc($("coProduct").value)}<br>Total: ${Number($("coPrice").value||0).toLocaleString()} AOA<br>Cliente: ${esc($("customer").value)}</p><span class="pill">PENDENTE</span></div>`}
+function metrics(){let v=+$("views").value||0,c=+$("clicks").value||0,l=+$("leads").value||0,s=+$("sales").value||0,r=+$("revenue").value||0,a=+$("adspend").value||0,pc=+$("prodCost").value||0,o=+$("otherCost").value||0;let ctr=v?c/v*100:0,conv=c?s/c*100:0,cps=s?(a/s):0,profit=r-a-pc-o,roas=a?r/a:0,margin=r?profit/r*100:0;$("metricsOut").innerHTML=`<div class="result"><div class="grid"><div><b>CTR</b><br>${ctr.toFixed(2)}%</div><div><b>Conversão</b><br>${conv.toFixed(2)}%</div><div><b>Custo/venda</b><br>${cps.toFixed(2)} AOA</div><div><b>Lucro líquido</b><br>${profit.toLocaleString()} AOA</div><div><b>ROAS</b><br>${roas.toFixed(2)}x</div><div><b>Margem líquida</b><br>${margin.toFixed(2)}%</div></div><p>${profit>0?"Há lucro neste período; compare com outros períodos antes de escalar.":"O período está negativo; reveja oferta, tráfego e custos antes de aumentar investimento."}</p></div>`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+boot()
+</script></body></html>
